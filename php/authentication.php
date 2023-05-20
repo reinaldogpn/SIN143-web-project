@@ -1,5 +1,34 @@
 <?php
+// Authentication: Para gerenciar a autenticação e autorização de usuários, incluindo login e registro.
+
 session_start();
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    if ($_POST["action"] === "register") {
+
+        $user = $_POST['newUser'];
+        $pass = $_POST['newPass'];
+        $email = trim($_POST['newEmail']);
+        $role = $_POST['newRole'];
+
+        newUser($user, $pass, $email, $role);
+
+    } elseif ($_POST["action"] === "update") {
+        
+        $id = $_POST['upId'];
+        $user = trim($_POST['upUser']);
+        $email = trim($_POST['upEmail']);
+
+        updateUser($id, $user, $email);
+
+    } elseif ($_POST["action"] === "delete") {
+        
+        $id = $_POST['delId'];
+
+        deleteUser($id);
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -36,13 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Verifica a senha usando a função password_verify()
         if (!password_verify($pass, $storedPassword)) {
             echo $wrongPass;
-            echo '<meta http-equiv="refresh" content="0;URL=index.php">';
+            //echo '<meta http-equiv="refresh" content="0;URL=../html/user-login.html">';
         }
 
     } else {
         // Usuário não encontrado
         echo $wrongUser;
-        echo '<meta http-equiv="refresh" content="0;URL=index.php">';
+        //echo '<meta http-equiv="refresh" content="0;URL=../html/user-login.html">';
     }
 
     $result->free();
