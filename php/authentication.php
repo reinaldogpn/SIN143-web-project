@@ -16,45 +16,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Conexão falhou: " . $conn->connect_error);
     }
 
-    $user = $_POST['email'];
+    $email = $_POST['email'];
     $pass = $_POST['password'];
 
     $wrongUser = sprintf('<script>alert("%s");</script>', "Usuário não encontrado!");
     $wrongPass = sprintf('<script>alert("%s");</script>', "Senha incorreta!");
 
-    // Realiza a consulta para buscar o usuário no banco de dados
+    // Realiza a consulta para buscar o usuário no banco de dados pelo email
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $user);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        $storedPassword = $user['password'];
+
+        $email = $result->fetch_assoc();
+        $storedPassword = $email['password'];
 
         // Verifica a senha usando a função password_verify()
-        if (password_verify($pass, $storedPassword)) {
-            
-            // Autenticação bem-sucedida, checar se o usuário é admin
-            $stmt2 = $conn->prepare("SELECT role_id FROM user_roles JOIN users ON user_roles.user_id = users.id WHERE users.username = ?");
-            $stmt2->bind_param("s", $user['username']);
-            $stmt2->execute();
-            $result2 = $stmt2->get_result();
-            $value = $result2->fetch_assoc();
-
-            if ($value['role_id'] === 0) {
-                $_SESSION['username'] = $user['username'];
-                header("Location: php/dashboard.php"); // Redireciona para a página de dashboard
-            } else {
-                echo $forbidden;
-                echo '<meta http-equiv="refresh" content="0;URL=index.php">';
-            }
-
-            $stmt2->close();
-            $result2->free();
-
-        } else {
-            // Senha incorreta
+        if (!password_verify($pass, $storedPassword)) {
             echo $wrongPass;
             echo '<meta http-equiv="refresh" content="0;URL=index.php">';
         }
