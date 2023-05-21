@@ -10,8 +10,9 @@
         <header>SIN 143 - Sistema de Cadastro de Eventos</header>
         <div class="form">
             <form id="login-form" method="post" action="../php/authentication.php">
-                <input id="email" name="email" type="text" placeholder="Email" required>
-                <input id="password" name="password" type="password" placeholder="Senha">
+                <input id="l_email" name="l_email" type="text" placeholder="Email" required>
+                <input id="l_password" name="l_password" type="password" placeholder="Senha" required>
+                <input name="action" type="hidden" value="login">
                 <button type="submit">Entrar</button>
             </form>
         </div>
