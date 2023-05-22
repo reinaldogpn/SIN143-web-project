@@ -6,13 +6,13 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="">
     <title>Registrar usuário</title>
-    <script src="../scripts/script.js"></script>
+    <script src="scripts/script.js"></script>
 </head>
 
 <body>
     <header>SIN 143 - Sistema de Cadastro de Eventos</header>
     <div class="form">
-        <form id="register-form" method="post" action="../php/authentication.php" onsubmit="event.preventDefault(); sendForm(this);">
+        <form id="register-form" method="post" onsubmit="event.preventDefault(); sendForm(this);" action="php/authentication.php">
             <input id="r_name" name="r_name" type="text" placeholder="Nome completo" required>
             <input id="r_email" name="r_email" type="text" placeholder="Email" required>
             <input id="r_password1" name="r_password1" type="password" placeholder="Senha" required>

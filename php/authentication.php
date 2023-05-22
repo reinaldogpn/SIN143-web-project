@@ -178,3 +178,15 @@ function userUpdate()
 }
 
 ?>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Autenticação</title>
+</head>
+
+<body>
+    <header>SIN 143 - Sistema de Cadastro de Eventos</header>
+    <a href="../home.html">Voltar</a>
+</body>
+</html>

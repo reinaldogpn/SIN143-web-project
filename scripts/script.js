@@ -33,7 +33,7 @@ function sendForm(form) {
 
     } else if (action === 'login') {
         // Adicione validações para campos de login, se necessário
-        var email = document.getElementById('r_email').value;
+        var email = document.getElementById('l_email').value;
 
         if (!isValidEmail(email)) {
             alert("Por favor, insira um email válido.");
@@ -43,7 +43,7 @@ function sendForm(form) {
     }
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '../php/authentication.php', true);
+    xhr.open('POST', 'php/authentication.php', true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             // Lógica para manipular a resposta do servidor, se necessário
@@ -53,7 +53,7 @@ function sendForm(form) {
             } else {
                 // Sucesso no login ou registro
                 alert(response.message);
-                window.location.href = "../html";
+                window.location.href = "home.html";
             }
         }
     };
