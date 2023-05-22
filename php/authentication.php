@@ -16,10 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         $name = $_POST['r_name'];
         $email = trim($_POST['r_email']);
-        $password = $_POST['r_password'];
+        $password1 = $_POST['r_password1'];
+        $password2 = $_POST['r_password2'];
         $role = $_POST['r_role'];
 
-        userRegister($name, $email, $password, $role);
+        userRegister($name, $email, $password1, $password2, $role);
 
     } elseif ($_POST["action"] === "update") {
         
@@ -68,13 +69,20 @@ function userLogin($email, $password)
             );
         //    echo json_encode($response);
         }
+
+        echo json_encode($response);
+
+        $result->free();
+        $stmt->close();
+        $conn->close();
+        exit();
+
     } else {
         // Usuário não encontrado
         $response = array(
             'error' => true,
             'message' => 'Usuário não encontrado!'
         );
-    //    echo json_encode($response);
     }
 
     echo json_encode($response);
@@ -85,7 +93,7 @@ function userLogin($email, $password)
     exit();
 }
 
-function userRegister($name, $email, $password, $role) 
+function userRegister($name, $email, $password1, $password2, $role) 
 {
     require_once 'config.php';
 
@@ -100,8 +108,16 @@ function userRegister($name, $email, $password, $role)
         die("Conexão falhou: " . $conn->connect_error);
     }
 
-    $success_msg = sprintf('<script>alert("%s");</script>', "Usuário cadastrado com sucesso!");
-    $error_msg = sprintf('<script>alert("%s");</script>', "Erro ao cadastrar usuário: " . $conn->error);
+    if ($password1 != $password2) {
+        $response = array(
+            'error' => true,
+            'message' => "As senhas não correspondem!"
+        );
+
+        echo json_encode($response);
+        $conn->close();
+        exit();
+    }
 
     try {
         
@@ -109,7 +125,7 @@ function userRegister($name, $email, $password, $role)
                                 VALUES (?, ?, ?, ?)");
 
         // Cria o hash da senha usando bcrypt antes de armazenar no bd
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password1, PASSWORD_DEFAULT);
 
         $stmt->bind_param("ssss", $name, $email, $hashedPassword, $role);
         $stmt->execute();
@@ -129,6 +145,8 @@ function userRegister($name, $email, $password, $role)
         }
 
         echo json_encode($response);
+        $stmt->close();
+        $conn->close();
         exit();
 
     } catch (mysqli_sql_exception $e) {

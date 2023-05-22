@@ -92,6 +92,6 @@ INSERT INTO `categories` (`category_name`) VALUES ('cursos');
 
 INSERT INTO `categories` (`category_name`) VALUES ('feiras');
 
-INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@ufv.br', `admin`, 'administrador');
+INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@ufv.br', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'administrador');
 
 --
