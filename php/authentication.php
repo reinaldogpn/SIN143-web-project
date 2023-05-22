@@ -23,9 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } elseif ($_POST["action"] === "update") {
         
-        
-
-
         userUpdate();
     }
 }
@@ -45,9 +42,6 @@ function userLogin($email, $password)
         die("Conexão falhou: " . $conn->connect_error);
     }
     
-    $wrongEmail_msg = sprintf('<script>alert("%s");</script>', "Usuário não encontrado!");
-    $wrongPass_msg = sprintf('<script>alert("%s");</script>', "Senha incorreta!");
-    
     // Realiza a consulta para buscar o usuário no banco de dados pelo email
     $stmt = $conn->prepare("SELECT * FROM users WHERE users.email = ?");
     $stmt->bind_param("s", $email);
@@ -55,25 +49,40 @@ function userLogin($email, $password)
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
-    
-        $email = $result->fetch_assoc();
-        $storedPassword = $email['password'];
+        $user = $result->fetch_assoc();
+        $storedPassword = $user['password'];
 
         // Verifica a senha usando a função password_verify()
-        if (!password_verify($pass, $storedPassword)) {
-            echo $wrongPass_msg;
-
+        if (!password_verify($password, $storedPassword)) {
+            // Senha incorreta
+            $response = array(
+                'error' => true,
+                'message' => 'Senha incorreta!'
+            );
+        //    echo json_encode($response);
+        } else {
+            // Sucesso no login
+            $response = array(
+                'error' => false,
+                'message' => 'Login bem-sucedido!'
+            );
+        //    echo json_encode($response);
         }
-    
     } else {
         // Usuário não encontrado
-        echo $wrongEmail_msg;
-
+        $response = array(
+            'error' => true,
+            'message' => 'Usuário não encontrado!'
+        );
+    //    echo json_encode($response);
     }
+
+    echo json_encode($response);
     
     $result->free();
     $stmt->close();
     $conn->close();
+    exit();
 }
 
 function userRegister($name, $email, $password, $role) 
@@ -107,29 +116,42 @@ function userRegister($name, $email, $password, $role)
     
         if ($stmt->affected_rows > 0) {
             // Usuário cadastrado com sucesso
-            echo $success_msg;
-
-    
+            $response = array(
+                'error' => false,
+                'message' => 'Usuário cadastrado com sucesso!'
+            );
         } else {
             // Erro ao cadastrar usuário
-            echo $error_msg;
-
+            $response = array(
+                'error' => true,
+                'message' => "Erro ao cadastrar usuário: " . $conn->error
+            );
         }
+
+        echo json_encode($response);
+        exit();
 
     } catch (mysqli_sql_exception $e) {
         if ($e->getCode() == 1062) {
             // Verifica se o erro é de entrada duplicada
-            echo sprintf('<script>alert("%s");</script>', "O email informado já está registrado.");
-
+            $response = array(
+                'error' => true,
+                'message' => 'O email informado já está registrado.'
+            );
         } else {
             // Outro erro ocorreu, trata de acordo com as necessidades
-            echo sprintf('<script>alert("%s");</script>', "Ocorreu um erro ao realizar a operação: " . $e->getMessage());
-
+            $response = array(
+                'error' => true,
+                'message' => 'Ocorreu um erro ao realizar a operação: ' . $e->getMessage()
+            );
         }
     }
 
+    echo json_encode($response);
+
     $stmt->close();
     $conn->close();
+    exit();
 }
 
 function userUpdate() 
