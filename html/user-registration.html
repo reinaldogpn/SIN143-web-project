@@ -1,26 +1,30 @@
 <!-- User registration: Página de registro para novos usuários. -->
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="">
-        <title>Registrar usuário</title>
-        <script src="../scripts/script.js"></script>
-    </head>
-    <body>
-        <header>SIN 143 - Sistema de Cadastro de Eventos</header>
-        <div class="form">
-            <form id="register-form" method="post" action="../php/authentication.php" onsubmit="event.preventDefault(); enviarFormulario(this);">
-                <input id="r_name" name="r_name" type="text" placeholder="Nome completo" required>
-                <input id="r_email" name="r_email" type="text" placeholder="Email" required>
-                <input id="r_password" name="r_password" type="password" placeholder="Senha" required>
-                <select name="r_role" id="r_role">
-                    <option value="participante" selected>Participante</option>
-                    <option value="organizador">Organizador</option>
-                </select>
-                <input name="action" type="hidden" value="register">
-                <button type="submit">Registrar</button>
-            </form>
-        </div>
-    </body>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="">
+    <title>Registrar usuário</title>
+    <script src="../scripts/script.js"></script>
+</head>
+
+<body>
+    <header>SIN 143 - Sistema de Cadastro de Eventos</header>
+    <div class="form">
+        <form id="register-form" method="post" action="../php/authentication.php"
+            onsubmit="event.preventDefault(); enviarFormulario(this);">
+            <input id="r_name" name="r_name" type="text" placeholder="Nome completo" required>
+            <input id="r_email" name="r_email" type="text" placeholder="Email" required>
+            <input id="r_password" name="r_password" type="password" placeholder="Senha" required>
+            <select name="r_role" id="r_role">
+                <option value="participante" selected>Participante</option>
+                <option value="organizador">Organizador</option>
+            </select>
+            <input name="action" type="hidden" value="register">
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+</body>
+
 </html>

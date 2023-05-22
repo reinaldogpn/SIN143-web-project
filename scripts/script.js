@@ -3,8 +3,8 @@ function enviarFormulario(form) {
     var action = form.querySelector('[name="action"]').value;
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'authentication.php', true);
-    xhr.onreadystatechange = function() {
+    xhr.open('POST', '../php/authentication.php', true);
+    xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             // Lógica para manipular a resposta do servidor, se necessário
             var response = JSON.parse(xhr.responseText);
@@ -13,9 +13,10 @@ function enviarFormulario(form) {
             } else {
                 // Sucesso no login ou registro
                 alert(response.message);
-                window.location.href = "pagina-inicial.php";
+                window.location.href = "../html";
             }
         }
     };
+    
     xhr.send(dadosFormulario);
 }
