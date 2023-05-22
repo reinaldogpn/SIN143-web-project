@@ -12,7 +12,7 @@
 <body>
     <header>SIN 143 - Sistema de Cadastro de Eventos</header>
     <div class="form">
-        <form id="login-form" method="post" onsubmit="event.preventDefault(); enviarFormulario(this);">
+        <form id="login-form" method="post" onsubmit="event.preventDefault(); sendForm(this);">
             <input id="l_email" name="l_email" type="text" placeholder="Email" required>
             <input id="l_password" name="l_password" type="password" placeholder="Senha" required>
             <input name="action" type="hidden" value="login">

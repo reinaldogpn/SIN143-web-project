@@ -1,6 +1,46 @@
-function enviarFormulario(form) {
+function isValidEmail(email) {
+    // Expressão regular para validar o formato do e-mail
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function sendForm(form) {
+    
     var dadosFormulario = new FormData(form);
     var action = form.querySelector('[name="action"]').value;
+
+    if (action === 'register') {
+
+        var email = document.getElementById('r_email').value;
+        var password1 = document.getElementById('r_password1').value;
+        var password2 = document.getElementById('r_password2').value;
+
+        // Validar campos de registro
+        if (!isValidEmail(email)) {
+            alert("Por favor, insira um email válido.");
+            return;
+        }
+
+        if (password1.length > 255) {
+            alert("A senha informada é muito longa.");
+            return;
+        }
+
+        if (password1 !== password2) {
+            alert("As senhas não coincidem.");
+            return;
+        }
+
+    } else if (action === 'login') {
+        // Adicione validações para campos de login, se necessário
+        var email = document.getElementById('r_email').value;
+
+        if (!isValidEmail(email)) {
+            alert("Por favor, insira um email válido.");
+            return;
+        }
+
+    }
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '../php/authentication.php', true);
@@ -17,6 +57,6 @@ function enviarFormulario(form) {
             }
         }
     };
-    
+
     xhr.send(dadosFormulario);
 }
