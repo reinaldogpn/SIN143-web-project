@@ -22,13 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         userRegister($name, $email, $password1, $password2, $role);
 
-    } elseif ($_POST["action"] === "update") {
-        
-        userUpdate();
+    } else {
+        echo '<a href="../home.html">Voltar</a>';
     }
 }
 
-function userLogin($email, $password) 
+function connectDB()
 {
     require_once 'config.php';
 
@@ -36,12 +35,19 @@ function userLogin($email, $password)
     $dbusername = DB_USERNAME;
     $dbpassword = DB_PASSWORD;
     $dbname = DB_NAME;
-    
-    $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
-    
-    if ($conn->connect_error) {
-        die("Conexão falhou: " . $conn->connect_error);
+
+    $connection = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+
+    if ($connection->connect_error) {
+        die("Falha na conexão com o banco de dados: " . $connection->connect_error);
     }
+
+    return $connection;
+}
+
+function userLogin($email, $password) 
+{
+    $conn = connectDB();
     
     // Realiza a consulta para buscar o usuário no banco de dados pelo email
     $stmt = $conn->prepare("SELECT * FROM users WHERE users.email = ?");
@@ -60,14 +66,18 @@ function userLogin($email, $password)
                 'error' => true,
                 'message' => 'Senha incorreta!'
             );
-        //    echo json_encode($response);
         } else {
             // Sucesso no login
+            $_SESSION['username'] = $user['email'];
+
+            // Separando o primeiro nome do usuário p/ ser exibido na msg de saudação
+            $partsName = explode(" ", $user['name']);
+            $firstName = $partsName[0];
+
             $response = array(
                 'error' => false,
-                'message' => 'Login bem-sucedido!'
+                'message' => 'Bem-vindo(a), ' . $firstName . '!'
             );
-        //    echo json_encode($response);
         }
 
         echo json_encode($response);
@@ -95,18 +105,7 @@ function userLogin($email, $password)
 
 function userRegister($name, $email, $password1, $password2, $role) 
 {
-    require_once 'config.php';
-
-    $servername = SERVER_NAME;
-    $dbusername = DB_USERNAME;
-    $dbpassword = DB_PASSWORD;
-    $dbname = DB_NAME;
-    
-    $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
-    
-    if ($conn->connect_error) {
-        die("Conexão falhou: " . $conn->connect_error);
-    }
+    $conn = connectDB();
 
     if ($password1 != $password2) {
         $response = array(
@@ -170,11 +169,6 @@ function userRegister($name, $email, $password1, $password2, $role)
     $stmt->close();
     $conn->close();
     exit();
-}
-
-function userUpdate() 
-{
-    
 }
 
 ?>
