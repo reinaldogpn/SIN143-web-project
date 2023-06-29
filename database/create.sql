@@ -1,8 +1,8 @@
 -- SCRIPT CRIAÇÃO DO BANCO DE DADOS --
 
-DROP DATABASE IF EXISTS `projeto_final_sin143`;
-CREATE DATABASE `projeto_final_sin143`;
-USE `projeto_final_sin143`;
+DROP DATABASE IF EXISTS `pseudoeventim`;
+CREATE DATABASE IF NOT EXISTS `pseudoeventim`;
+USE `pseudoeventim`;
 
 CREATE TABLE `roles` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
