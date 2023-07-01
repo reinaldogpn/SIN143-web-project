@@ -1,6 +1,6 @@
 <?php
 
-function dbconnect() 
+function connectdb() 
 {
     $servername = 'localhost';
     $dbusername = 'root';
