@@ -54,22 +54,22 @@ CREATE TABLE `reviews` (
 );
 
 ALTER TABLE `users`
-    ADD FOREIGN KEY (`role`) REFERENCES `roles`(`role_name`);
+    ADD FOREIGN KEY (`role`) REFERENCES `roles`(`role_name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `events`
-    ADD FOREIGN KEY (`category`) REFERENCES `categories`(`category_name`);
+    ADD FOREIGN KEY (`category`) REFERENCES `categories`(`category_name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `registrations`
-    ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`);
+    ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `registrations`
-    ADD FOREIGN KEY (`event_id`) REFERENCES `events`(`id`);
+    ADD FOREIGN KEY (`event_id`) REFERENCES `events`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `reviews`
-    ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`);
+    ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `reviews`
-    ADD FOREIGN KEY (`event_id`) REFERENCES `events`(`id`);
+    ADD FOREIGN KEY (`event_id`) REFERENCES `events`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- FUNCTIONS & TRIGGERS --
 
@@ -117,3 +117,45 @@ BEGIN
     CALL `calculate_avg_rating`(`OLD`.`event_id`);
 END$$
 DELIMITER ;
+
+-- INSERÇÕES --
+
+INSERT INTO `roles` (`role_name`) VALUES ('user');
+
+INSERT INTO `roles` (`role_name`) VALUES ('admin');
+
+INSERT INTO `categories` (`category_name`) VALUES ('festas');
+
+INSERT INTO `categories` (`category_name`) VALUES ('bares');
+
+INSERT INTO `categories` (`category_name`) VALUES ('shows');
+
+INSERT INTO `categories` (`category_name`) VALUES ('música ao vivo');
+
+INSERT INTO `categories` (`category_name`) VALUES ('teatros');
+
+INSERT INTO `categories` (`category_name`) VALUES ('cursos');
+
+INSERT INTO `categories` (`category_name`) VALUES ('feiras');
+
+INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'admin');
+
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #1', 'Descrição exemplo.', '2023-06-20', '19:00', 'Rio Paranaíba, MG', 'festas', 200.00, 'assets/example_1.png');
+
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #2', 'Descrição exemplo.', '2024-01-01', '18:30', 'Sete Lagoas, MG', 'bares', 300.00, 'assets/example_2.jpg');
+
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #3', 'Descrição exemplo.', '2023-12-23', '20:45', 'Belo Horizonte, MG', 'shows', 80.00, 'assets/example_3.jpg');
+
+INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 1, TRUE);
+
+INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 2, TRUE);
+
+INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 3, TRUE);
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 1, 10, 'Comentário exemplo.');	
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 2, 8, 'Comentário exemplo.');
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 3, 6, 'Comentário exemplo.');
+
+-- 
