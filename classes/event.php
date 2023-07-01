@@ -1,6 +1,6 @@
 <?php
 
-require_once '../database/connection.php';
+require_once __DIR__ . '/../database/connection.php';
 
 class Event
 {
@@ -17,7 +17,7 @@ class Event
     private $updated_at;
     private $connection;
     
-    public function __construct($title, $description, $date, $time, $location, $category, $price, $image = 'default.jpg')
+    public function __construct($title = null, $description = null, $date = null, $time = null, $location = null, $category = null, $price = null, $image = 'default.jpg')
     {
         $this->id = null;
         $this->title = $title;
@@ -179,7 +179,6 @@ class Event
         }
 
         $stmt->close();
-
         return $events;
     }
 
@@ -204,7 +203,6 @@ class Event
         }
 
         $stmt->close();
-
         return $event;
     }
 
@@ -229,7 +227,6 @@ class Event
         }
 
         $stmt->close();
-
         return $event;
     }
 

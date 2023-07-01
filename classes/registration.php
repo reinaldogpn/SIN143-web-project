@@ -1,6 +1,6 @@
 <?php
 
-require_once '../database/connection.php';
+require_once __DIR__ . '/../database/connection.php';
 
 class Registration
 {
@@ -93,11 +93,10 @@ class Registration
         }
 
         $stmt->close();
-
         return $payments;
     }
 
-    public function registerPayment($user_id, $event_id, $payment_status)
+    public function createPayment($user_id, $event_id, $payment_status)
     {
         $stmt = $this->connection->prepare("INSERT INTO registrations (user_id, event_id, payment_status) VALUES (?, ?, ?)");
         $stmt->bind_param("iii", $user_id, $event_id, $payment_status);
@@ -150,8 +149,8 @@ class Registration
             $response = array('error' => true, 'message' => 'Falha ao tentar remover o pagamento do sistema!');
         }
 
-        echo json_encode($response);
         $stmt->close();
+        echo json_encode($response);
     }
 }
 

@@ -1,16 +1,15 @@
 <?php
 
-require_once '../database/connection.php';
+require_once __DIR__ . '/../database/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recupera os valores enviados pelo formulário
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $role = $_POST['role'];
 
     // Cria uma instância da classe User
-    $user = new User($name, $email, $password, $role);
+    $user = new User($name, $email, $password);
 
     // Chama o método createUser para cadastrar o usuário
     $user->createUser();
@@ -25,7 +24,7 @@ class User
     private $role;
     private $connection;
     
-    public function __construct($name, $email, $password, $role)
+    public function __construct($name, $email, $password, $role = 'user')
     {
         $this->id = null;
         $this->name = $name;
@@ -126,7 +125,6 @@ class User
         }
 
         $stmt->close();
-
         return $users;
     }
 
@@ -149,7 +147,6 @@ class User
         }
 
         $stmt->close();
-
         return $user;
     }
 
@@ -171,7 +168,6 @@ class User
         }
 
         $stmt->close();
-
         return $user;
     }
 
@@ -284,8 +280,8 @@ class User
                     $response = array('error' => true, 'message' => 'Ocorreu um erro ao tentar atualizar o usuário.');
                 }
 
-                echo json_encode($response);
                 $stmt->close();
+                echo json_encode($response);
             }
 
         }
@@ -315,8 +311,8 @@ class User
                 $response = array('error' => true, 'message' => 'Falha ao tentar remover o usuário do sistema!');
             }
 
-            echo json_encode($response);
             $stmt->close();
+            echo json_encode($response);
         }
         else
         {

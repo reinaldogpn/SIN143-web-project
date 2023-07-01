@@ -27,6 +27,7 @@ CREATE TABLE `events` (
     `category` VARCHAR(100) NOT NULL,
     `price` DECIMAL(10, 2),
     `image` TEXT,
+    `avg_rating` DECIMAL(10, 2) DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -70,4 +71,49 @@ ALTER TABLE `reviews`
 ALTER TABLE `reviews`
     ADD FOREIGN KEY (`event_id`) REFERENCES `events`(`id`);
 
---
+-- FUNCTIONS & TRIGGERS --
+
+-- Procedure para calcular a média das avaliações de um evento --
+
+DROP PROCEDURE IF EXISTS `calculate_avg_rating`;
+DELIMITER $$
+CREATE PROCEDURE `calculate_avg_rating`(IN `event_id` INT)
+BEGIN
+    DECLARE `avg_rating` DECIMAL(10, 2);
+    SELECT AVG(`rating`) INTO `avg_rating` FROM `reviews` WHERE `event_id` = `event_id`;
+    UPDATE `events` SET `avg_rating` = `avg_rating` WHERE `id` = `event_id`;
+END$$
+DELIMITER ;
+
+-- Trigger para calcular a média das avaliações de um evento após insert --
+
+DROP TRIGGER IF EXISTS `update_avg_rating_on_insert`;
+DELIMITER $$
+CREATE TRIGGER `update_avg_rating_on_insert` AFTER INSERT ON `reviews`
+FOR EACH ROW
+BEGIN
+    CALL `calculate_avg_rating`(`NEW`.`event_id`);
+END$$
+DELIMITER ;
+
+-- Trigger para calcular a média das avaliações de um evento após update --
+
+DROP TRIGGER IF EXISTS `update_avg_rating_on_update`;
+DELIMITER $$
+CREATE TRIGGER `update_avg_rating_on_update` AFTER UPDATE ON `reviews`
+FOR EACH ROW
+BEGIN
+    CALL `calculate_avg_rating`(`NEW`.`event_id`);
+END$$
+DELIMITER ;
+
+-- Trigger para calcular a média das avaliações de um evento após delete --
+
+DROP TRIGGER IF EXISTS `update_avg_rating_on_delete`;
+DELIMITER $$
+CREATE TRIGGER `update_avg_rating_on_delete` AFTER DELETE ON `reviews`
+FOR EACH ROW
+BEGIN
+    CALL `calculate_avg_rating`(`OLD`.`event_id`);
+END$$
+DELIMITER ;

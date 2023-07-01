@@ -1,6 +1,6 @@
 <?php
 
-require_once '../database/connection.php';
+require_once __DIR__ . '/../database/connection.php';
 
 class Review
 {
@@ -118,7 +118,7 @@ class Review
         }
 
         $stmt->close();
-        
+
         return $reviews;
     }
 
@@ -144,6 +144,113 @@ class Review
         $stmt->close();
 
         return $review;
+    }
+
+    public function createReview()
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM reviews WHERE user_id = ? AND event_id = ?");
+        $stmt->bind_param("ii", $this->user_id, $this->event_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0)
+        {
+            $response = array('error' => true, 'message' => 'Você já avaliou este evento!');
+        }
+        else
+        {
+            if ($this->rating < 0 || $this->rating > 10)
+            {
+                $response = array('error' => true, 'message' => 'Avaliação inválida! Nota deve ser entre 0 e 10!');
+            }
+            else if (strlen($this->comment) > 500)
+            {
+                $response = array('error' => true, 'message' => 'Comentário muito longo!');
+            }
+            else
+            {
+                $stmt2 = $this->connection->prepare("INSERT INTO reviews (user_id, event_id, rating, comment) VALUES (?, ?, ?, ?)");
+                $stmt2->bind_param("iiis", $this->user_id, $this->event_id, $this->rating, $this->comment);
+                $stmt2->execute();
+
+                if ($stmt2->affected_rows > 0)
+                {
+                    $response = array('error' => false, 'message' => 'Avaliação registrada com sucesso!');
+                }
+                else
+                {
+                    $response = array('error' => true, 'message' => 'Falha ao registrar avaliação!');
+                }
+
+                $stmt2->close();
+            }
+        }
+
+        $stmt->close();
+        echo json_encode($response);
+    }
+
+    public function updateReview($id)
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM reviews WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0)
+        {
+            if ($this->rating < 0 || $this->rating > 10)
+            {
+                $response = array('error' => true, 'message' => 'Avaliação inválida! Nota deve ser entre 0 e 10!');
+            }
+            else if (strlen($this->comment) > 500)
+            {
+                $response = array('error' => true, 'message' => 'Comentário muito longo!');
+            }
+            else
+            {
+                $stmt2 = $this->connection->prepare("UPDATE reviews SET rating = ?, comment = ? WHERE id = ?");
+                $stmt2->bind_param("isi", $this->rating, $this->comment, $id);
+                $stmt2->execute();
+
+                if ($stmt2->affected_rows > 0)
+                {
+                    $response = array('error' => false, 'message' => 'Avaliação atualizada com sucesso!');
+                }
+                else
+                {
+                    $response = array('error' => true, 'message' => 'Falha ao atualizar avaliação!');
+                }
+
+                $stmt2->close();
+            }
+        }
+        else
+        {
+            $response = array('error' => true, 'message' => 'Avaliação não encontrada!');
+        }
+
+        $stmt->close();
+        echo json_encode($response);
+    }
+
+    public function deleteReview($id)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM reviews WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0)
+        {
+            $response = array('error' => false, 'message' => 'Avaliação excluída com sucesso!');
+        }
+        else
+        {
+            $response = array('error' => true, 'message' => 'Falha ao excluir avaliação!');
+        }
+
+        $stmt->close();
+        echo json_encode($response);
     }
 }
 

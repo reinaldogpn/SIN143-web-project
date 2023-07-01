@@ -1,10 +1,8 @@
 -- INSERÇÕES --
 
-INSERT INTO `roles` (`role_name`) VALUES ('organizador');
+INSERT INTO `roles` (`role_name`) VALUES ('user');
 
-INSERT INTO `roles` (`role_name`) VALUES ('participante');
-
-INSERT INTO `roles` (`role_name`) VALUES ('administrador');
+INSERT INTO `roles` (`role_name`) VALUES ('admin');
 
 INSERT INTO `categories` (`category_name`) VALUES ('festas');
 
@@ -20,7 +18,7 @@ INSERT INTO `categories` (`category_name`) VALUES ('cursos');
 
 INSERT INTO `categories` (`category_name`) VALUES ('feiras');
 
-INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'administrador');
+INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'admin');
 
 INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #1', 'Descrição exemplo.', '2023-06-20', '19:00:00', 'Rio Paranaíba, MG', 'festas', 200.00, 'path/examples/img1.png');
 
@@ -33,3 +31,11 @@ INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1,
 INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 2, TRUE);
 
 INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 3, TRUE);
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 1, 10, 'Comentário exemplo.');	
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 2, 8, 'Comentário exemplo.');
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 3, 6, 'Comentário exemplo.');
+
+-- 
