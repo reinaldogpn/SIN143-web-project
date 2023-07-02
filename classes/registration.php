@@ -2,20 +2,46 @@
 
 require_once __DIR__ . '/../database/connection.php';
 
+session_start();
+
+if (isset($_SESSION['user_id']))
+{
+    $user_id = $_SESSION['user_id'];
+    $event_id = $_POST['event_id'];
+    $amount = $_POST['amount'];
+    $value = $_POST['value'];
+
+    $registration = new Registration($user_id, $event_id, $amount, $value);
+    $registration->createPayment();
+}
+else
+{
+    header('Location: ../index.php');
+    exit();
+}
+
 class Registration
 {
     private $id;
     private $user_id;
     private $event_id;
+    private $amount;
+    private $value;
     private $payment_status;
+    private $created_at;
+    private $updated_at;
     private $connection;
     
-    public function __construct($user_id, $event_id, $payment_status = 0)
+    public function __construct($user_id, $event_id, $amount, $value, $payment_status = 0)
     {
         $this->id = null;
         $this->user_id = $user_id;
         $this->event_id = $event_id;
+        $this->amount = $amount;
+        $this->value = $value;
         $this->payment_status = $payment_status;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->connection = connectdb();
     }
 
@@ -41,9 +67,29 @@ class Registration
         return $this->event_id;
     }
 
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
     public function getPaymentStatus()
     {
         return $this->payment_status;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 
     // métodos set:
@@ -63,52 +109,46 @@ class Registration
         $this->event_id = $event_id;
     }
 
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
     public function setPaymentStatus($payment_status)
     {
         $this->payment_status = $payment_status;
     }
 
-    // métodos de persistência:
-
-    public function getPayments()
+    public function setCreatedAt($created_at)
     {
-        $stmt = $this->connection->prepare("SELECT * FROM registrations");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $payments = array();
-
-        if ($result->num_rows > 0)
-        {
-            while ($rel_payment = $result->fetch_assoc())
-            {
-                $payment = new Registration($rel_payment['user_id'], $rel_payment['event_id'], $rel_payment['payment_status']);
-                $payment->setId($rel_payment['id']);
-                array_push($payments, $payment);
-            }
-        }
-        else
-        {
-            $payments = null;
-        }
-
-        $stmt->close();
-        return $payments;
+        $this->created_at = $created_at;
     }
 
-    public function createPayment($user_id, $event_id, $payment_status)
+    public function setUpdatedAt($updated_at)
     {
-        $stmt = $this->connection->prepare("INSERT INTO registrations (user_id, event_id, payment_status) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $user_id, $event_id, $payment_status);
+        $this->updated_at = $updated_at;
+    }
+
+    // métodos de persistência:
+
+    public function createPayment()
+    {
+        $stmt = $this->connection->prepare("INSERT INTO registrations (user_id, event_id, amount, value, payment_status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iiiii", $this->user_id, $this->event_id, $this->amount, $this->value, $this->payment_status);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) 
         {
-            $response = array('error' => false, 'message' => 'Pagamento registrado com sucesso!');
+            $response = array('error' => false, 'message' => 'Compra registrada com sucesso!');
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Falha ao registrar o pagamento!');
+            $response = array('error' => true, 'message' => 'Falha ao registrar sua compra!');
         }
 
         $stmt->close();

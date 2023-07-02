@@ -91,14 +91,16 @@ class Authentication
                 // Inicia a sessão e armazena os dados do usuário
                 $this->setRole($user['role']);
 
+                $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_email'] = $user['email'];
-                $_SESSION['privileges'] = $this->getRole();
+                $_SESSION['user_type'] = $this->getRole();
 
                 // Separando o primeiro nome do usuário p/ ser exibido na msg de saudação
                 $partsName = explode(" ", $user['name']);
                 $firstName = $partsName[0];
 
                 $response = array('error' => false, 'message' => 'Bem-vindo(a), ' . $firstName . '!');
+                header('Location: ../pages/home.php');
             }
             else
             {
@@ -112,12 +114,6 @@ class Authentication
 
         $stmt->close();
         echo json_encode($response);
-    }
-
-    public function logout()
-    {
-        session_destroy();
-        header('Location: ../index.php');
     }
 }
 

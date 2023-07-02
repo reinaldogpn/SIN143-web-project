@@ -17,6 +17,11 @@ CREATE TABLE `users` (
     `role` VARCHAR(30) NOT NULL
 );
 
+CREATE TABLE `categories` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `category_name` VARCHAR(100) NOT NULL UNIQUE
+);
+
 CREATE TABLE `events` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(255) NOT NULL UNIQUE,
@@ -32,16 +37,15 @@ CREATE TABLE `events` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `categories` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `category_name` VARCHAR(100) NOT NULL UNIQUE
-);
-
 CREATE TABLE `registrations` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,
     `event_id` INT NOT NULL,
-    `payment_status` BOOLEAN NOT NULL DEFAULT FALSE
+    `amount` INT NOT NULL,
+    `value` DECIMAL(10, 2) NOT NULL,
+    `payment_status` BOOLEAN NOT NULL DEFAULT FALSE,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `reviews` (
@@ -140,17 +144,23 @@ INSERT INTO `categories` (`category_name`) VALUES ('feiras');
 
 INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'admin');
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #1', 'Descrição exemplo.', '2023-06-20', '19:00', 'Rio Paranaíba, MG', 'festas', 200.00, 'assets/example_1.png');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Djavan Turnê D 2023', 'Descrição exemplo.', '2023-06-20', '19:00', 'Rio Paranaíba, MG', 'shows', 90.00, '../assets/example_1.png');
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #2', 'Descrição exemplo.', '2024-01-01', '18:30', 'Sete Lagoas, MG', 'bares', 300.00, 'assets/example_2.jpg');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Roupa Nova 40 Anos', 'Descrição exemplo.', '2024-01-01', '18:30', 'Sete Lagoas, MG', 'shows', 100.00, '../assets/example_2.jpg');
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Título Exemplo #3', 'Descrição exemplo.', '2023-12-23', '20:45', 'Belo Horizonte, MG', 'shows', 80.00, 'assets/example_3.jpg');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Titãs Encontro Todos ao Mesmo Tempo Agora', 'Descrição exemplo.', '2023-12-23', '20:45', 'Belo Horizonte, MG', 'shows', 80.00, '../assets/example_3.jpg');
 
-INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 1, TRUE);
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Roberto Carlos em São Paulo', 'Descrição exemplo.', '2023-06-20', '19:00', 'São Paulo, SP', 'shows', 200.00, '../assets/example_4.png');
 
-INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 2, TRUE);
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Soy Rebelde Tour', 'Descrição exemplo.', '2024-01-01', '18:30', 'Florianópolis, SC', 'shows', 250.00, '../assets/example_5.jpg');
 
-INSERT INTO `registrations` (`user_id`, `event_id`, `payment_status`) VALUES (1, 3, TRUE);
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Red Hot Chili Peppers', 'Descrição exemplo.', '2023-12-23', '20:45', 'Brasília, DF', 'shows', 500.00, '../assets/example_6.png');
+
+INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (1, 1, 2, 180.00, TRUE);
+
+INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (1, 2, 1, 100.00, TRUE);
+
+INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (1, 3, 3, 240.00, TRUE);
 
 INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 1, 10, 'Comentário exemplo.');	
 

@@ -13,11 +13,12 @@ class Event
     private $category;
     private $price;
     private $image;
+    private $avg_rating;
     private $created_at;
     private $updated_at;
     private $connection;
     
-    public function __construct($title = null, $description = null, $date = null, $time = null, $location = null, $category = null, $price = null, $image = 'default.jpg')
+    public function __construct($title = null, $description = null, $date = null, $time = null, $location = null, $category = null, $price = null, $image = '../assets/default.jpeg')
     {
         $this->id = null;
         $this->title = $title;
@@ -28,6 +29,7 @@ class Event
         $this->category = $category;
         $this->price = $price;
         $this->image = $image;
+        $this->avg_rating = 0;
         $this->created_at = null;
         $this->updated_at = null;
         $this->connection = connectdb();
@@ -83,6 +85,11 @@ class Event
     public function getImage()
     {
         return $this->image;
+    }
+
+    public function getAVGRating()
+    {
+        return $this->avg_rating;
     }
 
     public function getCreatedAt()
@@ -142,6 +149,11 @@ class Event
         $this->image = $image;
     }
 
+    public function setAVGRating($avg_rating)
+    {
+        $this->avg_rating = $avg_rating;
+    }
+
     public function setCreatedAt($created_at)
     {
         $this->created_at = $created_at;
@@ -154,9 +166,11 @@ class Event
 
     // métodos de persistência:
 
-    public function getEvents()
+    public function getEvents($term = '') // buscar eventos por título, local ou categoria
     {
-        $stmt = $this->connection->prepare("SELECT * FROM events");
+        $stmt = $this->connection->prepare("SELECT * FROM events WHERE title LIKE ? OR location LIKE ? OR category LIKE ?");
+        $term = "%$term%";
+        $stmt->bind_param("sss", $term, $term, $term);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -168,6 +182,7 @@ class Event
             {
                 $event = new Event($rel_event['title'], $rel_event['description'], $rel_event['date'], $rel_event['time'], $rel_event['location'], $rel_event['category'], $rel_event['price'], $rel_event['image']);
                 $event->setId($rel_event['id']);
+                $event->setAVGRating($rel_event['avg_rating']);
                 $event->setCreatedAt($rel_event['created_at']);
                 $event->setUpdatedAt($rel_event['updated_at']);
                 array_push($events, $event);
@@ -194,6 +209,7 @@ class Event
             $rel_event = $result->fetch_assoc();
             $event = new Event($rel_event['title'], $rel_event['description'], $rel_event['date'], $rel_event['time'], $rel_event['location'], $rel_event['category'], $rel_event['price'], $rel_event['image']);
             $event->setId($rel_event['id']);
+            $event->setAVGRating($rel_event['avg_rating']);
             $event->setCreatedAt($rel_event['created_at']);
             $event->setUpdatedAt($rel_event['updated_at']);
         } 
@@ -218,6 +234,7 @@ class Event
             $rel_event = $result->fetch_assoc();
             $event = new Event($rel_event['title'], $rel_event['description'], $rel_event['date'], $rel_event['time'], $rel_event['location'], $rel_event['category'], $rel_event['price'], $rel_event['image']);
             $event->setId($rel_event['id']);
+            $event->setAVGRating($rel_event['avg_rating']);
             $event->setCreatedAt($rel_event['created_at']);
             $event->setUpdatedAt($rel_event['updated_at']);
         } 
