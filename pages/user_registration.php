@@ -44,6 +44,11 @@
                 <label for="password">Senha:</label>
                 <input type="password" id="password" name="password" required><br>
 
+                <select name="role" id="role">
+                    <option value="user">Participante</option>
+                    <option value="promoter">Organizador</option>
+                </select>
+
                 <input type="submit" value="Cadastrar">
             </form>
         </div>

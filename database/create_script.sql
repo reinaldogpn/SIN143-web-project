@@ -126,6 +126,8 @@ DELIMITER ;
 
 INSERT INTO `roles` (`role_name`) VALUES ('user');
 
+INSERT INTO `roles` (`role_name`) VALUES ('promoter');
+
 INSERT INTO `roles` (`role_name`) VALUES ('admin');
 
 INSERT INTO `categories` (`category_name`) VALUES ('festas');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/css/home.css">
+    <link rel="stylesheet" href="../assets/css/events.css">
     <title>PseudoEventim - Home</title>
 </head>
 <body>
@@ -43,7 +43,7 @@
                 <?php
                     require_once '../classes/event.php';
                     $obj = new Event();
-                    $events = $obj->getEvents();
+                    $events = $obj->getNewestEvents();
                     if ($events != null) 
                     {
                         foreach ($events as $event) {

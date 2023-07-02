@@ -166,11 +166,51 @@ class Event
 
     // métodos de persistência:
 
-    public function getEvents($term = '') // buscar eventos por título, local ou categoria
+    public function getEvents($term = '', $category = null) // buscar eventos por título ou local, filtrando por categoria se for o caso
     {
-        $stmt = $this->connection->prepare("SELECT * FROM events WHERE title LIKE ? OR location LIKE ? OR category LIKE ?");
-        $term = "%$term%";
-        $stmt->bind_param("sss", $term, $term, $term);
+
+        if ($category == null) 
+        {
+            $stmt = $this->connection->prepare("SELECT * FROM events WHERE title LIKE ? OR location LIKE ? ORDER BY created_at DESC");
+            $term = '%' . $term . '%';
+            $stmt->bind_param("ss", $term, $term);
+        } 
+        else 
+        {
+            $stmt = $this->connection->prepare("SELECT * FROM events WHERE (title LIKE ? OR location LIKE ?) AND category = ? ORDER BY created_at DESC");
+            $term = '%' . $term . '%';
+            $stmt->bind_param("sss", $term, $term, $category);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) 
+        {
+            $events = array();
+
+            while ($rel_event = $result->fetch_assoc()) 
+            {
+                $event = new Event($rel_event['title'], $rel_event['description'], $rel_event['date'], $rel_event['time'], $rel_event['location'], $rel_event['category'], $rel_event['price'], $rel_event['image']);
+                $event->setId($rel_event['id']);
+                $event->setAVGRating($rel_event['avg_rating']);
+                $event->setCreatedAt($rel_event['created_at']);
+                $event->setUpdatedAt($rel_event['updated_at']);
+                array_push($events, $event);
+            }
+        } 
+        else 
+        {
+            $events = null;
+        }
+
+        $stmt->close();
+        return $events;
+    }
+
+    public function getNewestEvents()
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM events ORDER BY created_at DESC LIMIT 3");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -245,6 +285,60 @@ class Event
 
         $stmt->close();
         return $event;
+    }
+
+    public function getEventsByCategory($category)
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM events WHERE category = ?");
+        $stmt->bind_param("s", $category);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) 
+        {
+            $events = array();
+
+            while ($rel_event = $result->fetch_assoc()) 
+            {
+                $event = new Event($rel_event['title'], $rel_event['description'], $rel_event['date'], $rel_event['time'], $rel_event['location'], $rel_event['category'], $rel_event['price'], $rel_event['image']);
+                $event->setId($rel_event['id']);
+                $event->setAVGRating($rel_event['avg_rating']);
+                $event->setCreatedAt($rel_event['created_at']);
+                $event->setUpdatedAt($rel_event['updated_at']);
+                array_push($events, $event);
+            }
+        } 
+        else 
+        {
+            $events = null;
+        }
+
+        $stmt->close();
+        return $events;
+    }
+
+    public function getCategories()
+    {
+        $stmt = $this->connection->prepare("SELECT DISTINCT category_name FROM categories");
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) 
+        {
+            $categories = array();
+
+            while ($rel_category = $result->fetch_assoc()) 
+            {
+                array_push($categories, $rel_category['category_name']);
+            }
+        } 
+        else 
+        {
+            $categories = null;
+        }
+
+        $stmt->close();
+        return $categories;
     }
 
     public function createEvent()

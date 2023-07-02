@@ -105,38 +105,36 @@ body {
     background-color: #555;
 }
 
-.event {
+.modules {
     background-color: #fff;
     padding: 10px;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.event img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 10px;
+.modules a {
+    text-decoration: none;
+    color: #333;
 }
 
-.event h3 {
+.modules h3 {
     font-size: 18px;
     margin-bottom: 5px;
 }
 
-.event p {
+.modules p {
     font-size: 14px;
     margin-bottom: 5px;
 }
 
 /* Estilizando o rodapé */
 .footer {
-    display: fixed;
+    position: fixed;
     bottom: 0;
     text-align: center;
     align-items: center;
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     background-color: #333;
     color: #fff;
 }

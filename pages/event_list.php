@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/css/event_list.css">
+    <link rel="stylesheet" href="../assets/css/events.css">
     <title>PseudoEventim - Busca</title>
 </head>
 <body>
     <header class="header">
-        <h1>PseudoEventim</h2>
+        <h1>PseudoEventim</h1>
         <br>
         <h2>Busca</h2>
         <div class="buttons">
@@ -34,36 +34,78 @@
     </header>
     <main class="main">
         <div class="search_bar_div">
-            <form action="event_search.php" class="search_bar" method="GET">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="search_bar" method="GET">
                 <input type="text" name="search" id="search" placeholder="Pesquisar eventos">
+                <select name="filter" id="filter">
+                    <option value="0">Todas as categorias</option>
+                    <?php
+                        require_once '../classes/event.php';
+                        $obj = new Event();
+                        $categories = $obj->getCategories();
+                        if ($categories != null) 
+                        {
+                            foreach ($categories as $category) 
+                            {
+                                echo '<option value="' . $category . '">' . $category . '</option>';
+                            }
+                        }
+                    ?>
+                </select>
                 <input type="submit" value="Pesquisar">
             </form>
         </div>
         <div class="events_display">
-            <?php
-                require_once '../classes/event.php';
-                
-                isset($_GET['search']) ? $search = $_GET['search'] : $search = null;
+        <?php
+            require_once '../classes/event.php';
 
-                $obj = new Event();
-                $events = $obj->getEvents($search);
-                if ($events != null) 
+            $obj = new Event();
+
+            if (isset($_GET['search']) && isset($_GET['filter'])) 
+            {
+                if (!empty($_GET['search']) && $_GET['filter'] == 0) 
                 {
-                    foreach ($events as $event) 
-                    {
-                        echo '<div class="event">';
-                        echo '<a href="event_details.php?id=' . $event->getId() . '">';
-                        echo '<h3>' . $event->getTitle() . '</h3>';
-                        echo '<p>' . 'Categoria: ' . $event->getCategory() . '</p>';
-                        echo '</a>';
-                        echo '</div>';
-                    }
+                    $events = $obj->getEvents($_GET['search']);
+                } 
+                else if (!empty($_GET['search']) && $_GET['filter'] != 0) 
+                {
+                    $events = $obj->getEvents($_GET['search'], $_GET['filter']);
+                } 
+                else if (empty($_GET['search']) && $_GET['filter'] != 0) 
+                {
+                    $events = $obj->getEvents($_GET['search'], $_GET['filter']);
                 } 
                 else 
                 {
-                    echo '<p>Nenhum evento encontrado.</p>';
+                    $events = $obj->getEvents();
                 }
-            ?>
+            }
+            else if (isset($_GET['search']) && !isset($_GET['filter'])) 
+            {
+                $events = $obj->getEvents($_GET['search']);
+            }
+            else
+            {
+                $events = $obj->getEvents();
+            }
+        
+            if ($events != null) 
+            {
+                foreach ($events as $event) {
+                    echo '<div class="modules">';
+                    echo '<a href="event_details.php?id=' . $event->getId() . '">';
+                    echo '<img src="' . $event->getImage() . '" alt="' . $event->getImage() . '">';
+                    echo '<h3>' . $event->getTitle() . '</h3>';
+                    echo '</a>';
+                    echo '<p>' . $event->getDescription() . '</p>';
+                    echo '<p>' . date('d/m/Y', strtotime($event->getDate())) . ' - ' . date('H:i', strtotime($event->getTime())) . '</p>';
+                    echo '</div>';
+                }
+            } 
+            else 
+            {
+                echo '<p>Nenhum evento encontrado.</p>';
+            }
+        ?>
         </div>
     </main>
     <footer class="footer">
