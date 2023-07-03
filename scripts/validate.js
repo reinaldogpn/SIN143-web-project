@@ -41,5 +41,13 @@ function validateRegister() {
         }
     }
 
+    // validar telefone
+    var phone = document.getElementById("phone").value;
+    var phoneRegex = /^[0-9]{10,11}$/;
+    if (!phoneRegex.test(phone)) {
+        alert("Telefone inválido!");
+        return false;
+    }
+
     return true;
 }
