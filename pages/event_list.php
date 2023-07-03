@@ -17,12 +17,18 @@
                 
                 if (isset($_SESSION['user_id'])) // Usuário está logado
                 {
-                    echo '<a href="user_logout.php">Logout</a>';
+                    if ($_SESSION['user_type'] == 'promoter' || $_SESSION['user_type'] == 'admin') // Usuário é organizador ou administrador
+                    {
+                        echo '<a href="event_edit.php">Editar evento</a>';
+                        echo '<a href="event_create.php">Cadastrar evento</a>';
+                    }
 
-                    if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin') // Usuário é administrador
+                    if ($_SESSION['user_type'] == 'admin') // Usuário é administrador
                     {
                         echo '<a href="dashboard.php">Painel Administrativo</a>';
                     } 
+
+                    echo '<a href="user_logout.php">Logout</a>';
                 } 
                 else // Usuário não está logado
                 {

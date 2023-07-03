@@ -1,0 +1,160 @@
+/* Reset de estilos para garantir consistência entre navegadores */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo básico para o corpo da página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+/* Estilizando o cabeçalho */
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    overflow: auto;
+}
+
+.header h1 {
+    font-size: 28px;
+}
+
+.header h2 {
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.buttons {
+    float: right;
+}
+
+.buttons a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.buttons a:hover {
+    background-color: #555;
+}
+
+/* Estilizando o conteúdo principal */
+.main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.display_profile {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.display_profile img {
+    width: 222px;
+    height: 222px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.display_profile h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.display_profile p {
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.display_profile input[type="text"],
+.display_profile input[type="password"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.display_profile input[type="button"],
+.display_profile input[type="submit"] {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.display_profile input[type="button"]:hover,
+.display_profile input[type="submit"]:hover {
+    background-color: #555;
+}
+
+.display_eventsHistory,
+.display_reviewsHistory {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.display_eventsHistory table,
+.display_reviewsHistory table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.display_eventsHistory th,
+.display_reviewsHistory th {
+    background-color: #333;
+    color: #fff;
+    padding: 8px;
+    text-align: left;
+}
+
+.display_eventsHistory td,
+.display_reviewsHistory td {
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+}
+
+.display_eventsHistory img {
+    width: 222px;
+    height: 222px;
+}
+
+/* Estilizando o rodapé */
+.footer {
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+}

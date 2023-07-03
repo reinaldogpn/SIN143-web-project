@@ -2,8 +2,6 @@
 
 require_once __DIR__ . '/../database/connection.php';
 
-session_start();
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
     // Recupera os valores enviados pelo formulário
@@ -24,11 +22,11 @@ class Authentication
     private $role;
     private $connection;
 
-    public function __construct($email, $password)
+    public function __construct($email, $password, $role = 'user')
     {
         $this->email = $email;
         $this->password = $password;
-        $this->role = null;
+        $this->role = $role;
         $this->connection = connectdb();
     }
 
@@ -88,18 +86,17 @@ class Authentication
 
             if (password_verify($this->getPassword(), $storedPassword))
             {
-                // Inicia a sessão e armazena os dados do usuário
-                $this->setRole($user['role']);
-
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_email'] = $user['email'];
-                $_SESSION['user_type'] = $this->getRole();
-
                 // Separando o primeiro nome do usuário p/ ser exibido na msg de saudação
                 $partsName = explode(" ", $user['name']);
-                $firstName = $partsName[0];
 
-                $response = array('error' => false, 'message' => 'Bem-vindo(a), ' . $firstName . '!');
+                // Inicia a sessão e armazena os dados do usuário logado
+                session_start();
+                $_SESSION['logged_in'] = true;
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $partsName[0];
+                $_SESSION['user_type'] = $user['role'];
+
+                $response = array('error' => false, 'message' => 'Bem-vindo(a), ' . $_SESSION['user_name'] . '!');
                 header('Location: ../pages/home.php');
             }
             else

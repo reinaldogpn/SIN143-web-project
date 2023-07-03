@@ -15,14 +15,21 @@
             <?php
                 session_start();
                 
-                if (isset($_SESSION['user_id'])) // Usuário está logado
+                if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) // Usuário está logado
                 {
-                    echo '<a href="user_logout.php">Logout</a>';
+                    echo '<a href="user_profile.php">Meu perfil</a>';
 
-                    if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin') // Usuário é administrador
+                    if (isset($_SESSION['user_type']) || $_SESSION['user_type'] == 'promoter') // Usuário é organizador ou administrador
                     {
-                        echo '<a href="dashboard.php">Painel Administrativo</a>';
+                        echo '<a href="event_list.php">Eventos</a>';
+
+                        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin') // Usuário é administrador
+                        {
+                            echo '<a href="dashboard.php">Painel Administrativo</a>';
+                        } 
                     } 
+
+                    echo '<a href="user_logout.php">Logout</a>';
                 } 
                 else // Usuário não está logado
                 {

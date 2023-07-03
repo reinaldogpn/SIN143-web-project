@@ -2,42 +2,113 @@
 
 require_once __DIR__ . '/../database/connection.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create'])) 
+{
+    // Verifica se um arquivo foi enviado
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) 
+    {
+        $fileName = $_FILES['avatar']['name'];
+        $tempPath = $_FILES['avatar']['tmp_name'];
+        $avatarPath = '../assets/' . $fileName;
+
+        // Move o arquivo do local temporário para o destino final
+        if (move_uploaded_file($tempPath, $avatarPath)) 
+        {
+            $userAvatar = $avatarPath;
+        } 
+        else 
+        {
+            $response = array('error' => true, 'message' => 'Ocorreu um erro ao fazer o upload do arquivo.');
+            echo json_encode($response);
+            return;
+        }
+    }
+    else
+    {
+        $userAvatar = '../assets/default-avatar.png';
+    }
 
     $name = $_POST['name'];
+    $cpf = $_POST['cpf'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $avatar = $userAvatar;
     $email = $_POST['email'];
     $password = $_POST['password'];
     $role = $_POST['role'];
 
-    $user = new User($name, $email, $password, $role);
-
+    $user = new User($name, $cpf, $phone, $address, $avatar, $email, $password, $role);
     $user->createUser();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_update']))
+{
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) 
+    {
+        $fileName = $_FILES['avatar']['name'];
+        $tempPath = $_FILES['avatar']['tmp_name'];
+        $avatarPath = '../assets/' . $fileName;
+
+        // Move o arquivo do local temporário para o destino final
+        if (move_uploaded_file($tempPath, $avatarPath)) 
+        {
+            $userAvatar = $avatarPath;
+        } 
+        else 
+        {
+            $response = array('error' => true, 'message' => 'Ocorreu um erro ao fazer o upload do arquivo.');
+            echo json_encode($response);
+            return;
+        }
+    }
+    else
+    {
+        $userAvatar = null;
+    }
+
+    $id = $_POST['user_id'];
+    $name = $_POST['name'];
+    $cpf = $_POST['cpf'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $avatar = $userAvatar;
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $user = new User();
+    $user->updateUser($id, $name, $cpf, $phone, $address, $avatar, $email, $password);
 }
 
 class User
 {
     private $id;
     private $name;
+    private $cpf;
+    private $phone;
+    private $address;
+    private $avatar;
     private $email;
     private $password;
     private $role;
     private $connection;
     
-    public function __construct($name, $email, $password, $role = 'user')
+    public function __construct($name = null, $cpf = null, $phone = null, $address = null, $avatar = null, $email = null, $password = null, $role = 'user')
     {
         $this->id = null;
         $this->name = $name;
+        $this->cpf = $cpf;
+        $this->phone = $phone;
+        $this->address = $address;
+        $this->avatar = $avatar;
         $this->email = $email;
         $this->password = $password;
         $this->role = $role;
         $this->connection = connectdb();
-        // echo "Conexão aberta!"; //debug
     }
 
     public function __destruct()
     {
         $this->connection->close();
-        // echo "Conexão fechada!"; //debug
     }
     
     // métodos get:
@@ -50,6 +121,26 @@ class User
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getCpf()
+    {
+        return $this->cpf;
+    }
+
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
     }
     
     public function getEmail()
@@ -83,6 +174,26 @@ class User
     {
         $this->name = $name;
     }
+
+    public function setCpf($cpf)
+    {
+        $this->cpf = $cpf;
+    }
+
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+    }
     
     public function setEmail($email)
     {
@@ -91,7 +202,7 @@ class User
     
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
     
     public function setRole($role)
@@ -113,12 +224,12 @@ class User
 
             while ($rel_user = $result->fetch_assoc()) 
             {
-                $user = new User($rel_user['name'], $rel_user['email'], $rel_user['password'], $rel_user['role']);
+                $user = new User($rel_user['name'], $rel_user['cpf'], $rel_user['phone'], $rel_user['address'], $rel_user['avatar'], $rel_user['email'], $rel_user['role']);
                 $user->setId($rel_user['id']);
                 array_push($users, $user);
             }
-        } 
-        else 
+        }
+        else
         {
             $users = null;
         }
@@ -137,7 +248,7 @@ class User
         if ($result->num_rows > 0) 
         {
             $rel_user = $result->fetch_assoc();
-            $user = new User($rel_user['name'], $rel_user['email'], $rel_user['password'], $rel_user['role']);
+            $user = new User($rel_user['name'], $rel_user['cpf'], $rel_user['phone'], $rel_user['address'], $rel_user['avatar'], $rel_user['email'], $rel_user['password'], $rel_user['role']);
             $user->setId($rel_user['id']);
         } 
         else 
@@ -153,13 +264,14 @@ class User
     {
         $stmt = $this->connection->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->bind_param("i", $id);
-        $result = $stmt->execute();
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result->num_rows > 0) 
         {
             $rel_user = $result->fetch_assoc();
-            $user = new User($rel_user['name'], $rel_user['email'], $rel_user['password'], $rel_user['role']);
-            $user->setId($rel_user['id']);
+            $user = new User($rel_user['name'], $rel_user['cpf'], $rel_user['phone'], $rel_user['address'], $rel_user['avatar'], $rel_user['email'], $rel_user['password'], $rel_user['role']);
+            $user->setId($id);
         } 
         else 
         {
@@ -176,12 +288,11 @@ class User
 
         if (!$existingUser)
         {
-            $stmt = $this->connection->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
+            $stmt = $this->connection->prepare("INSERT INTO users (name, cpf, phone, address, avatar, email, password, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
             // Cria o hash da senha usando bcrypt antes de armazenar no bd
             $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
-
-            $stmt->bind_param("ssss", $this->name, $this->email, $hashedPassword, $this->role);
+            $stmt->bind_param("ssssssss", $this->name, $this->cpf, $this->phone, $this->address, $this->avatar, $this->email, $hashedPassword, $this->role);
             $stmt->execute();
 
             if ($stmt->affected_rows > 0) // Usuário cadastrado com sucesso
@@ -203,7 +314,8 @@ class User
         echo json_encode($response);
     }
 
-    public function updateUser($id, $name, $email, $password, $role)
+
+    public function updateUser($id, $name, $cpf, $phone, $address, $avatar, $email, $password)
     {
         $existingUser = $this->getUserById($id);
 
@@ -221,6 +333,30 @@ class User
                 $types .= 's';
                 $params[] = $name;
             }
+            if ($existingUser->getCpf() !== $cpf)
+            {
+                $updateFields[] = 'cpf = ?';
+                $types .= 's';
+                $params[] = $cpf;
+            }
+            if ($existingUser->getPhone() !== $phone)
+            {
+                $updateFields[] = 'phone = ?';
+                $types .= 's';
+                $params[] = $phone;
+            }
+            if ($existingUser->getAddress() !== $address)
+            {
+                $updateFields[] = 'address = ?';
+                $types .= 's';
+                $params[] = $address;
+            }
+            if (isset($avatar) && $existingUser->getAvatar() !== $avatar)
+            {
+                $updateFields[] = 'avatar = ?';
+                $types .= 's';
+                $params[] = $avatar;
+            }
             if ($existingUser->getEmail() !== $email)
             {
                 $updateFields[] = 'email = ?';
@@ -233,12 +369,6 @@ class User
                 $updateFields[] = 'password = ?';
                 $types .= 's';
                 $params[] = $hashedPassword;
-            }
-            if ($existingUser->getName() !== $role)
-            {
-                $updateFields[] = 'role = ?';
-                $types .= 's';
-                $params[] = $role;
             }
 
             if (count($updateFields) === 0) // Verifica se há campos para atualizar
@@ -260,9 +390,9 @@ class User
                 $bindParams = array_merge(array($types), $params);
                 $bindParamsReferences = array();
 
-                foreach ($bindParams as $key => $value) 
+                foreach($bindParams as $key => $value)
                 {
-                    $bindParamsReferences[$key] = $bindParams[$key];
+                    $bindParamsReferences[$key] = &$bindParams[$key];
                 }
 
                 call_user_func_array(array($stmt, 'bind_param'), $bindParamsReferences);

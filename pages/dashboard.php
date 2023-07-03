@@ -2,12 +2,7 @@
 
 session_start();
 
-if (!isset($_SESSION['user_id'])) 
-{
-    header('Location: user_login.php');
-    exit();
-}
-if ($_SESSION['user_type'] != 'admin')
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'admin') 
 {
     header('Location: error.php');
     exit();

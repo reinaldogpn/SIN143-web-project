@@ -12,7 +12,7 @@ class Review
     private $created_at;
     private $connection;
 
-    public function __construct($user_id, $event_id, $rating, $comment)
+    public function __construct($user_id = null, $event_id = null, $rating = null, $comment = null)
     {
         $this->id = null;
         $this->user_id = $user_id;
@@ -144,6 +144,35 @@ class Review
         $stmt->close();
 
         return $review;
+    }
+
+    public function getReviewsByUserId($id)
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM reviews WHERE user_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0)
+        {
+            $reviews = array();
+
+            while ($rel_review = $result->fetch_assoc())
+            {
+                $review = new Review($rel_review['user_id'], $rel_review['event_id'], $rel_review['rating'], $rel_review['comment']);
+                $review->setId($rel_review['id']);
+                $review->setCreatedAt($rel_review['created_at']);
+                array_push($reviews, $review);
+            }
+        }
+        else
+        {
+            $reviews = null;
+        }
+
+        $stmt->close();
+
+        return $reviews;
     }
 
     public function createReview()

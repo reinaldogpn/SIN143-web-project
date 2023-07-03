@@ -12,6 +12,10 @@ CREATE TABLE `roles` (
 CREATE TABLE `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
+    `cpf` VARCHAR(11) NOT NULL UNIQUE,
+    `phone` VARCHAR(11),
+    `address` TEXT,
+    `avatar` TEXT,
     `email` VARCHAR(100) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
     `role` VARCHAR(30) NOT NULL
@@ -34,7 +38,8 @@ CREATE TABLE `events` (
     `image` TEXT,
     `avg_rating` DECIMAL(10, 2) DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `created_by` INT NOT NULL
 );
 
 CREATE TABLE `registrations` (
@@ -62,6 +67,9 @@ ALTER TABLE `users`
 
 ALTER TABLE `events`
     ADD FOREIGN KEY (`category`) REFERENCES `categories`(`category_name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `events`
+    ADD FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `registrations`
     ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -136,7 +144,7 @@ INSERT INTO `categories` (`category_name`) VALUES ('bares');
 
 INSERT INTO `categories` (`category_name`) VALUES ('shows');
 
-INSERT INTO `categories` (`category_name`) VALUES ('música ao vivo');
+INSERT INTO `categories` (`category_name`) VALUES ('festivais');
 
 INSERT INTO `categories` (`category_name`) VALUES ('teatros');
 
@@ -144,30 +152,34 @@ INSERT INTO `categories` (`category_name`) VALUES ('cursos');
 
 INSERT INTO `categories` (`category_name`) VALUES ('feiras');
 
-INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES ('Administrador', 'admin@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'admin');
+INSERT INTO `users` (`name`, `cpf`, `phone`, `address`, `avatar`, `email`, `password`, `role`) VALUES ('Administrador', '11111111111', '11987654321', 'Rua Exemplo, 01, Bairo Exemplo, Rio Paranaíba - MG', '../assets/default-avatar.png', 'admin@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'admin');
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Djavan Turnê D 2023', 'Descrição exemplo.', '2023-06-20', '19:00', 'Rio Paranaíba, MG', 'shows', 90.00, '../assets/example_1.png');
+INSERT INTO `users` (`name`, `cpf`, `phone`, `address`, `avatar`, `email`, `password`, `role`) VALUES ('Promotor', '22222222222', '11987654321', 'Rua Exemplo, 01, Bairo Exemplo, Rio Paranaíba - MG', '../assets/default-avatar.png', 'promoter@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'promoter');
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Roupa Nova 40 Anos', 'Descrição exemplo.', '2024-01-01', '18:30', 'Sete Lagoas, MG', 'shows', 100.00, '../assets/example_2.jpg');
+INSERT INTO `users` (`name`, `cpf`, `phone`, `address`, `avatar`, `email`, `password`, `role`) VALUES ('Participante', '33333333333', '11987654321', 'Rua Exemplo, 01, Bairo Exemplo, Rio Paranaíba - MG', '../assets/default-avatar.png', 'user@email.com', '$2y$10$U3vDQKKEdC2BFUXzX4K6iupFqNDAoNpW/QwI/y5QhmFUuWk3xLc.W', 'user');
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Titãs Encontro Todos ao Mesmo Tempo Agora', 'Descrição exemplo.', '2023-12-23', '20:45', 'Belo Horizonte, MG', 'shows', 80.00, '../assets/example_3.jpg');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`, `created_by`) VALUES ('Djavan Turnê D 2023', 'Descrição exemplo.', '2023-06-20', '19:00', 'Rio Paranaíba, MG', 'shows', 90.00, '../assets/example_1.png', 2);
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Roberto Carlos em São Paulo', 'Descrição exemplo.', '2023-06-20', '19:00', 'São Paulo, SP', 'shows', 200.00, '../assets/example_4.png');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`, `created_by`) VALUES ('Roupa Nova 40 Anos', 'Descrição exemplo.', '2024-01-01', '18:30', 'Sete Lagoas, MG', 'shows', 100.00, '../assets/example_2.jpg', 2);
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Soy Rebelde Tour', 'Descrição exemplo.', '2024-01-01', '18:30', 'Florianópolis, SC', 'shows', 250.00, '../assets/example_5.jpg');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`, `created_by`) VALUES ('Titãs Encontro Todos ao Mesmo Tempo Agora', 'Descrição exemplo.', '2023-12-23', '20:45', 'Belo Horizonte, MG', 'shows', 80.00, '../assets/example_3.jpg', 2);
 
-INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`) VALUES ('Red Hot Chili Peppers', 'Descrição exemplo.', '2023-12-23', '20:45', 'Brasília, DF', 'shows', 500.00, '../assets/example_6.png');
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`, `created_by`) VALUES ('Roberto Carlos em São Paulo', 'Descrição exemplo.', '2023-06-20', '19:00', 'São Paulo, SP', 'shows', 200.00, '../assets/example_4.png', 2);
 
-INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (1, 1, 2, 180.00, TRUE);
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`, `created_by`) VALUES ('Soy Rebelde Tour', 'Descrição exemplo.', '2024-01-01', '18:30', 'Florianópolis, SC', 'shows', 250.00, '../assets/example_5.jpg', 2);
 
-INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (1, 2, 1, 100.00, TRUE);
+INSERT INTO `events` (`title`, `description`, `date`, `time`, `location`, `category`, `price`, `image`, `created_by`) VALUES ('Red Hot Chili Peppers', 'Descrição exemplo.', '2023-12-23', '20:45', 'Brasília, DF', 'shows', 500.00, '../assets/example_6.png', 2);
 
-INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (1, 3, 3, 240.00, TRUE);
+INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (3, 1, 2, 180.00, TRUE);
 
-INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 1, 10, 'Comentário exemplo.');	
+INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (3, 2, 1, 100.00, TRUE);
 
-INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 2, 8, 'Comentário exemplo.');
+INSERT INTO `registrations` (`user_id`, `event_id`, `amount`, `value`, `payment_status`) VALUES (3, 3, 3, 240.00, TRUE);
 
-INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (1, 3, 6, 'Comentário exemplo.');
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (3, 1, 10, 'Comentário exemplo.');	
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (3, 2, 8, 'Comentário exemplo.');
+
+INSERT INTO `reviews` (`user_id`, `event_id`, `rating`, `comment`) VALUES (3, 3, 6, 'Comentário exemplo.');
 
 -- 
