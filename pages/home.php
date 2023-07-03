@@ -13,7 +13,9 @@
         <h2>Página Inicial</h2>
         <div class="buttons">
             <?php
-                session_start();
+                if (session_status() != PHP_SESSION_ACTIVE) {
+                    session_start();
+                }
                 
                 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) // Usuário está logado
                 {

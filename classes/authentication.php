@@ -8,14 +8,10 @@ require_once __DIR__ . '/../database/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-    // Recupera os valores enviados pelo formulário
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Cria uma instância da classe Authentication
     $authentication = new Authentication($email, $password);
-
-    // Chama o método authenticate para autenticar o usuário
     $authentication->authenticate();
 }
 
@@ -77,7 +73,6 @@ class Authentication
 
     public function authenticate()
     {
-        // Realiza a consulta para buscar o usuário no banco de dados pelo email
         $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $this->email);
         $stmt->execute();

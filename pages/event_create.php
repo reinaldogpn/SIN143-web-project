@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] != 'promoter' && $_SESSION['user_type'] != 'admin')) 
 {
@@ -43,9 +45,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] != 'promoter' && $_S
             <a href="home.php">Página inicial</a>
         </div>
     </header>
-    <main class="main">
-    <!-- Create event: Página para criar um novo evento. -->
-    
+    <main class="main">    
     <div class="create_event_form">
         <form action="../classes/event.php" method="POST" enctype="multipart/form-data">
             <label for="name">Título do evento:</label>

@@ -43,7 +43,9 @@
     </header>
     <main class="main">
         <?php
-            session_start();
+            if (session_status() != PHP_SESSION_ACTIVE) {
+                session_start();
+            }
             
             if (isset($_SESSION['status']) && isset($_SESSION['message'])) 
             {

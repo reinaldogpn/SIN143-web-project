@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_update']))
         $tempPath = $_FILES['avatar']['tmp_name'];
         $avatarPath = '../assets/' . $fileName;
 
-        // Move o arquivo do local temporário para o destino final
         if (move_uploaded_file($tempPath, $avatarPath)) 
         {
             $userAvatar = $avatarPath;
@@ -289,40 +288,55 @@ class User
     public function createUser()
     {
         $existingUser = $this->getUserByEmail($this->email);
-
-        if (!$existingUser)
+    
+        if (!$existingUser) 
         {
-            $stmt = $this->connection->prepare("INSERT INTO users (name, cpf, phone, address, avatar, email, password, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-            // Cria o hash da senha usando bcrypt antes de armazenar no bd
-            $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
-            $stmt->bind_param("ssssssss", $this->name, $this->cpf, $this->phone, $this->address, $this->avatar, $this->email, $hashedPassword, $this->role);
-            $stmt->execute();
-
-            if ($stmt->affected_rows > 0) // Usuário cadastrado com sucesso
+            try 
             {
-                $_SESSION['status'] = 'success';
-                $_SESSION['message'] = 'Usuário cadastrado com sucesso!';
-                header("Location: ../pages/redirect.php");
-            }
-            else
+                $stmt = $this->connection->prepare("INSERT INTO users (name, cpf, phone, address, avatar, email, password, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    
+                // Cria o hash da senha usando bcrypt antes de armazenar no bd
+                $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
+                $stmt->bind_param("ssssssss", $this->name, $this->cpf, $this->phone, $this->address, $this->avatar, $this->email, $hashedPassword, $this->role);
+                $stmt->execute();
+    
+                if ($stmt->affected_rows > 0) // Usuário cadastrado com sucesso
+                {
+                    $_SESSION['status'] = 'success';
+                    $_SESSION['message'] = 'Usuário cadastrado com sucesso!';
+                    header("Location: ../pages/redirect.php");
+                } else {
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['message'] = 'Erro ao cadastrar usuário!';
+                    header("Location: ../pages/redirect.php");
+                }
+    
+                $stmt->close();
+            } 
+            catch (mysqli_sql_exception $e) 
             {
-                $_SESSION['status'] = 'error';
-                $_SESSION['message'] = 'Erro ao cadastrar usuário!';
-                header("Location: ../pages/redirect.php");
+                if ($e->getCode() == 1062) // Erro de chave duplicada (email ou cpf)
+                {
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['message'] = 'Erro ao cadastrar usuário: ' . $e->getMessage();
+                    header("Location: ../pages/redirect.php");
+                } 
+                else // Outro erro ocorreu
+                { 
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['message'] = 'Erro ao cadastrar usuário: ' . $e->getMessage();
+                    header("Location: ../pages/redirect.php");
+                }
             }
-
-            $stmt->close();
-        }
-        else
+        } 
+        else 
         {
             $_SESSION['status'] = 'error';
             $_SESSION['message'] = 'E-mail já cadastrado!';
             header("Location: ../pages/redirect.php");
         }
     }
-
-
+    
     public function updateUser($id, $name, $cpf, $phone, $address, $avatar, $email, $password)
     {
         $existingUser = $this->getUserById($id);

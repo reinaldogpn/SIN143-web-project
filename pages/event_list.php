@@ -13,7 +13,9 @@
         <h2>Busca</h2>
         <div class="buttons">
             <?php
-                session_start();
+                if (session_status() != PHP_SESSION_ACTIVE) {
+                    session_start();
+                }
                 
                 if (isset($_SESSION['user_id'])) // Usuário está logado
                 {
