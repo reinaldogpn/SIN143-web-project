@@ -101,7 +101,7 @@
                 foreach ($events as $event) {
                     echo '<div class="modules">';
                     echo '<a href="event_details.php?id=' . $event->getId() . '">';
-                    echo '<img src="' . $event->getImage() . '" alt="' . $event->getImage() . '">';
+                    echo '<img src="' . $event->getImage() . '" height="222" width="222" alt="' . $event->getImage() . '">';
                     echo '<h3>' . $event->getTitle() . '</h3>';
                     echo '</a>';
                     echo '<p>' . $event->getDescription() . '</p>';
