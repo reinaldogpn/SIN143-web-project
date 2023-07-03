@@ -1,17 +1,10 @@
 function validateRegister() {
-    // validar email usando regex
-    var email = document.getElementById("email").value;
-    var emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i;
-    if (!emailRegex.test(email)) {
-        alert("Email inválido!");
-        return false;
-    }
 
-    // validar senha
-    var password = document.getElementById("password").value;
-    var passwordcheck = document.getElementById("passwordcheck").value;
-    if (password != passwordcheck) {
-        alert("As senhas não conferem!");
+    // validar nome
+    var name = document.getElementById("name").value;
+    var nameRegex = /^[a-záàâãéèêíïóôõöúçñ ]+$/i;
+    if (!nameRegex.test(name)) {
+        alert("Nome inválido!");
         return false;
     }
 
@@ -23,11 +16,11 @@ function validateRegister() {
         return false;
     }
 
-    // validar nome
-    var name = document.getElementById("name").value;
-    var nameRegex = /^[a-záàâãéèêíïóôõöúçñ ]+$/i;
-    if (!nameRegex.test(name)) {
-        alert("Nome inválido!");
+    // validar telefone
+    var phone = document.getElementById("phone").value;
+    var phoneRegex = /^[0-9]{10,11}$/;
+    if (!phoneRegex.test(phone)) {
+        alert("Telefone inválido!");
         return false;
     }
 
@@ -41,11 +34,19 @@ function validateRegister() {
         }
     }
 
-    // validar telefone
-    var phone = document.getElementById("phone").value;
-    var phoneRegex = /^[0-9]{10,11}$/;
-    if (!phoneRegex.test(phone)) {
-        alert("Telefone inválido!");
+    // validar email usando regex
+    var email = document.getElementById("email").value;
+    var emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i;
+    if (!emailRegex.test(email)) {
+        alert("Email inválido!");
+        return false;
+    }
+
+    // validar senha
+    var password = document.getElementById("password").value;
+    var passwordcheck = document.getElementById("passwordcheck").value;
+    if (password != passwordcheck) {
+        alert("As senhas não conferem!");
         return false;
     }
 
