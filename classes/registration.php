@@ -18,8 +18,9 @@ if (isset($_SESSION['user_id']))
 }
 else
 {
-    header('Location: ../index.php');
-    exit();
+    $_SESSION['status'] = 'error';
+    $_SESSION['message'] = 'Você deve estar logado(a) para fazer a compra!';
+    header("Location: ../pages/redirect.php");
 }
 
 class Registration
