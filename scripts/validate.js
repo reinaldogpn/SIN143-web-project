@@ -1,71 +1,45 @@
-window.onload = function () {
-    // Obtém referências aos elementos do formulário
-    var form = document.querySelector('form');
-    var nameInput = document.getElementById('name');
-    var cpfInput = document.getElementById('cpf');
-    var phoneInput = document.getElementById('phone');
-    var emailInput = document.getElementById('email');
-    var passwordInput = document.getElementById('password');
-    var passwordCheckInput = document.getElementById('passwordcheck');
-
-    // Adiciona um ouvinte de evento de envio ao formulário
-    form.addEventListener('submit', function (event) {
-        // Verifica se o campo de nome está vazio
-        if (nameInput.value.trim() === '') {
-            alert('Por favor, insira o nome.');
-            event.preventDefault();
-            return;
-        }
-
-        // Verifica se o campo de CPF está vazio
-        if (cpfInput.value.trim() === '') {
-            alert('Por favor, insira o CPF.');
-            event.preventDefault();
-            return;
-        }
-
-        // Verifica se o campo de telefone está vazio
-        if (phoneInput.value.trim() === '') {
-            alert('Por favor, insira o telefone.');
-            event.preventDefault();
-            return;
-        }
-
-        // Verifica se o campo de e-mail está vazio ou em um formato inválido
-        if (emailInput.value.trim() === '') {
-            alert('Por favor, insira o e-mail.');
-            event.preventDefault();
-            return;
-        } else if (!validateEmail(emailInput.value.trim())) {
-            alert('Por favor, insira um e-mail válido.');
-            event.preventDefault();
-            return;
-        }
-
-        // Verifica se o campo de senha está vazio
-        if (passwordInput.value.trim() === '') {
-            alert('Por favor, insira a senha.');
-            event.preventDefault();
-            return;
-        }
-
-        // Verifica se o campo de confirmação de senha está vazio ou não coincide com a senha digitada
-        if (passwordCheckInput.value.trim() === '') {
-            alert('Por favor, confirme a senha.');
-            event.preventDefault();
-            return;
-        } else if (passwordCheckInput.value.trim() !== passwordInput.value.trim()) {
-            alert('As senhas não coincidem.');
-            event.preventDefault();
-            return;
-        }
-
-        // Se todas as validações passaram, o formulário será enviado
-    });
-
-    // Função de validação de e-mail simples
-    function validateEmail(email) {
-        var re = /\S+@\S+\.\S+/;
-        return re.test(email);
+function validateRegister() {
+    // validar email usando regex
+    var email = document.getElementById("email").value;
+    var emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i;
+    if (!emailRegex.test(email)) {
+        alert("Email inválido!");
+        return false;
     }
-};
+
+    // validar senha
+    var password = document.getElementById("password").value;
+    var passwordcheck = document.getElementById("passwordcheck").value;
+    if (password != passwordcheck) {
+        alert("As senhas não conferem!");
+        return false;
+    }
+
+    // validar cpf (informado somente números)
+    var cpf = document.getElementById("cpf").value;
+    var cpfRegex = /^[0-9]{11}$/;
+    if (!cpfRegex.test(cpf)) {
+        alert("CPF inválido!");
+        return false;
+    }
+
+    // validar nome
+    var name = document.getElementById("name").value;
+    var nameRegex = /^[a-záàâãéèêíïóôõöúçñ ]+$/i;
+    if (!nameRegex.test(name)) {
+        alert("Nome inválido!");
+        return false;
+    }
+
+    // validar foto
+    var avatar = document.getElementById("avatar").value;
+    if (avatar != "") {
+        var avatarRegex = /^.*\.(jpg|jpeg|png|gif|bmp)$/i;
+        if (!avatarRegex.test(avatar)) {
+            alert("Formato de imagem inválido!");
+            return false;
+        }
+    }
+
+    return true;
+}

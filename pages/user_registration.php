@@ -35,7 +35,7 @@
     <main class="main">
         <div class="form_div">
             <script src="../scripts/validate.js"></script>
-            <form action="../classes/user.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <form action="../classes/user.php" method="POST" enctype="multipart/form-data" onsubmit="return validateRegister()">
                 <label for="name">Nome:</label>
                 <input type="text" id="name" name="name" required><br>
 
