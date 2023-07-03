@@ -184,17 +184,23 @@ class Review
 
         if ($result->num_rows > 0)
         {
-            $response = array('error' => true, 'message' => 'Você já avaliou este evento!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Você já avaliou este evento!';
+            header("Location: ../pages/redirect.php");
         }
         else
         {
             if ($this->rating < 0 || $this->rating > 10)
             {
-                $response = array('error' => true, 'message' => 'Avaliação inválida! Nota deve ser entre 0 e 10!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Avaliação inválida! Deve ser um número entre 0 e 10!';
+                header("Location: ../pages/redirect.php");
             }
             else if (strlen($this->comment) > 500)
             {
-                $response = array('error' => true, 'message' => 'Comentário muito longo!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Comentário inválido! Deve ter no máximo 500 caracteres!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
@@ -204,11 +210,15 @@ class Review
 
                 if ($stmt2->affected_rows > 0)
                 {
-                    $response = array('error' => false, 'message' => 'Avaliação registrada com sucesso!');
+                    $_SESSION['status'] = 'success';
+                    $_SESSION['message'] = 'Avaliação registrada com sucesso!';
+                    header("Location: ../pages/redirect.php");
                 }
                 else
                 {
-                    $response = array('error' => true, 'message' => 'Falha ao registrar avaliação!');
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['message'] = 'Erro ao registrar avaliação!';
+                    header("Location: ../pages/redirect.php");
                 }
 
                 $stmt2->close();
@@ -216,7 +226,6 @@ class Review
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 
     public function updateReview($id)
@@ -230,11 +239,15 @@ class Review
         {
             if ($this->rating < 0 || $this->rating > 10)
             {
-                $response = array('error' => true, 'message' => 'Avaliação inválida! Nota deve ser entre 0 e 10!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Avaliação inválida! Deve ser um número entre 0 e 10!';
+                header("Location: ../pages/redirect.php");
             }
             else if (strlen($this->comment) > 500)
             {
-                $response = array('error' => true, 'message' => 'Comentário muito longo!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Comentário inválido! Deve ter no máximo 500 caracteres!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
@@ -244,11 +257,15 @@ class Review
 
                 if ($stmt2->affected_rows > 0)
                 {
-                    $response = array('error' => false, 'message' => 'Avaliação atualizada com sucesso!');
+                    $_SESSION['status'] = 'success';
+                    $_SESSION['message'] = 'Avaliação atualizada com sucesso!';
+                    header("Location: ../pages/redirect.php");
                 }
                 else
                 {
-                    $response = array('error' => true, 'message' => 'Falha ao atualizar avaliação!');
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['message'] = 'Erro ao atualizar avaliação!';
+                    header("Location: ../pages/redirect.php");
                 }
 
                 $stmt2->close();
@@ -256,11 +273,12 @@ class Review
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Avaliação não encontrada!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Avaliação não encontrada!';
+            header("Location: ../pages/redirect.php");
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 
     public function deleteReview($id)
@@ -271,15 +289,18 @@ class Review
 
         if ($stmt->affected_rows > 0)
         {
-            $response = array('error' => false, 'message' => 'Avaliação excluída com sucesso!');
+            $_SESSION['status'] = 'success';
+            $_SESSION['message'] = 'Avaliação excluída com sucesso!';
+            header("Location: ../pages/redirect.php");
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Falha ao excluir avaliação!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Erro ao excluir avaliação!';
+            header("Location: ../pages/redirect.php");
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 }
 

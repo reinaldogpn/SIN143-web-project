@@ -1,5 +1,9 @@
 <?php
 
+if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../database/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create']))
@@ -18,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create']))
         } 
         else 
         {
-            $response = array('error' => true, 'message' => 'Ocorreu um erro ao fazer o upload do arquivo.');
-            echo json_encode($response);
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Ocorreu um erro ao fazer o upload do arquivo.';
+            header("Location: ../pages/redirect.php");
             return;
         }
     }
@@ -58,8 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit']))
         } 
         else 
         {
-            $response = array('error' => true, 'message' => 'Ocorreu um erro ao fazer o upload do arquivo.');
-            echo json_encode($response);
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Ocorreu um erro ao fazer o upload do arquivo.';
+            header("Location: ../pages/redirect.php");
             return;
         }
     }
@@ -516,21 +522,25 @@ class Event
 
             if ($stmt->affected_rows > 0) // Evento cadastrado com sucesso
             {
-                $response = array('error' => false, 'message' => 'Evento cadastrado com sucesso!');
+                $_SESSION['status'] = 'success';
+                $_SESSION['message'] = 'Evento cadastrado com sucesso!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
-                $response = array('error' => true, 'message' => 'Ocorreu um erro ao realizar a operação!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Ocorreu um erro ao realizar a operação!';
+                header("Location: ../pages/redirect.php");
             }
 
             $stmt->close();
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Já existe um evento cadastrado com o título informado!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Já existe um evento cadastrado com o título informado!';
+            header("Location: ../pages/redirect.php");
         }
-
-        echo json_encode($response);
     }
 
     public function deleteEvent($id)
@@ -545,21 +555,25 @@ class Event
 
             if ($stmt->affected_rows > 0) // Evento deletado com sucesso
             {
-                $response = array('error' => false, 'message' => 'Evento deletado com sucesso!');
+                $_SESSION['status'] = 'success';
+                $_SESSION['message'] = 'Evento deletado com sucesso!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
-                $response = array('error' => true, 'message' => 'Ocorreu um erro ao realizar a operação!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Ocorreu um erro ao realizar a operação!';
+                header("Location: ../pages/redirect.php");
             }
 
             $stmt->close();
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Não existe um evento cadastrado com o ID informado!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Não existe um evento cadastrado com o ID informado!';
+            header("Location: ../pages/redirect.php");
         }
-
-        echo json_encode($response);
     }
 
     public function updateEvent($id)
@@ -574,21 +588,25 @@ class Event
 
             if ($stmt->affected_rows > 0) // Evento atualizado com sucesso
             {
-                $response = array('error' => false, 'message' => 'Evento atualizado com sucesso!');
+                $_SESSION['status'] = 'success';
+                $_SESSION['message'] = 'Evento atualizado com sucesso!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
-                $response = array('error' => true, 'message' => 'Ocorreu um erro ao realizar a operação!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Ocorreu um erro ao realizar a operação!';
+                header("Location: ../pages/redirect.php");
             }
 
             $stmt->close();
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Não existe um evento cadastrado com o ID informado!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Não existe um evento cadastrado com o ID informado!';
+            header("Location: ../pages/redirect.php");
         }
-
-        echo json_encode($response);
     }
 }
 

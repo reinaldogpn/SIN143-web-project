@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once __DIR__ . '/../database/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
@@ -90,27 +92,30 @@ class Authentication
                 $partsName = explode(" ", $user['name']);
 
                 // Inicia a sessão e armazena os dados do usuário logado
-                session_start();
                 $_SESSION['logged_in'] = true;
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $partsName[0];
                 $_SESSION['user_type'] = $user['role'];
 
-                $response = array('error' => false, 'message' => 'Bem-vindo(a), ' . $_SESSION['user_name'] . '!');
-                header('Location: ../pages/home.php');
+                $_SESSION['status'] = 'success';
+                $_SESSION['message'] = 'Bem-vindo(a), ' . $_SESSION['user_name'] . '!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
-                $response = array('error' => true, 'message' => 'Senha incorreta!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Senha incorreta!';
+                header("Location: ../pages/redirect.php");
             }
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Usuário não encontrado!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Usuário não encontrado!';
+            header("Location: ../pages/redirect.php");
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 }
 

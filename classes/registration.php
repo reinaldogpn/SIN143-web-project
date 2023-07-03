@@ -142,15 +142,18 @@ class Registration
 
         if ($stmt->affected_rows > 0) 
         {
-            $response = array('error' => false, 'message' => 'Compra registrada com sucesso!');
+            $_SESSION['status'] = 'success';
+            $_SESSION['message'] = 'Compra realizada com sucesso!';
+            header("Location: ../pages/redirect.php");
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Falha ao registrar sua compra!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Falha ao realizar a compra!';
+            header("Location: ../pages/redirect.php");
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 
     public function updatePaymentStatus($user_id, $event_id, $payment_status)
@@ -161,15 +164,18 @@ class Registration
 
         if ($stmt->affected_rows > 0) 
         {
-            $response = array('error' => false, 'message' => 'Status do pagamento atualizado com sucesso!');
+            $_SESSION['status'] = 'success';
+            $_SESSION['message'] = 'Status do pagamento atualizado com sucesso!';
+            header("Location: ../pages/redirect.php");
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Falha ao atualizar o status do pagamento!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Falha ao atualizar o status do pagamento!';
+            header("Location: ../pages/redirect.php");
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 
     public function deletePayment($user_id, $event_id)
@@ -180,15 +186,18 @@ class Registration
 
         if($result)
         {
-            $response = array('error' => false, 'message' => 'Pagamento removido do sistema.');
+            $_SESSION['status'] = 'success';
+            $_SESSION['message'] = 'Pagamento removido com sucesso!';
+            header("Location: ../pages/redirect.php");
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Falha ao tentar remover o pagamento do sistema!');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Falha ao remover o pagamento!';
+            header("Location: ../pages/redirect.php");
         }
 
         $stmt->close();
-        echo json_encode($response);
     }
 }
 

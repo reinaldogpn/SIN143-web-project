@@ -297,21 +297,25 @@ class User
 
             if ($stmt->affected_rows > 0) // Usuário cadastrado com sucesso
             {
-                $response = array('error' => false, 'message' => 'Usuário cadastrado com sucesso!');
+                $_SESSION['status'] = 'success';
+                $_SESSION['message'] = 'Usuário cadastrado com sucesso!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
-                $response = array('error' => true, 'message' => 'Ocorreu um erro ao realizar a operação!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Erro ao cadastrar usuário!';
+                header("Location: ../pages/redirect.php");
             }
 
             $stmt->close();
         }
         else
         {
-            $response = array('error' => true, 'message' => 'O email informado já está registrado.');
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'E-mail já cadastrado!';
+            header("Location: ../pages/redirect.php");
         }
-
-        echo json_encode($response);
     }
 
 
@@ -373,8 +377,9 @@ class User
 
             if (count($updateFields) === 0) // Verifica se há campos para atualizar
             {
-                $response = array('error' => false, 'message' => 'Nenhuma alteração foi feita.');
-                echo json_encode($response);
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Nenhum campo foi alterado!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
@@ -402,22 +407,26 @@ class User
 
                 if ($stmt->affected_rows > 0) 
                 {
-                    $response = array('error' => false, 'message' => 'Usuário atualizado com sucesso!');
+                    $_SESSION['status'] = 'success';
+                    $_SESSION['message'] = 'Usuário atualizado com sucesso!';
+                    header("Location: ../pages/redirect.php");
                 } 
                 else 
                 {
-                    $response = array('error' => true, 'message' => 'Ocorreu um erro ao tentar atualizar o usuário.');
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['message'] = 'Erro ao atualizar usuário!';
+                    header("Location: ../pages/redirect.php");
                 }
 
                 $stmt->close();
-                echo json_encode($response);
             }
 
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Usuário não encontrado.');
-            echo json_encode($response);
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Usuário não encontrado!';
+            header("Location: ../pages/redirect.php");
         }
     }
 
@@ -433,20 +442,24 @@ class User
 
             if($result)
             {
-                $response = array('error' => false, 'message' => 'Usuário removido do sistema.');
+                $_SESSION['status'] = 'success';
+                $_SESSION['message'] = 'Usuário removido com sucesso!';
+                header("Location: ../pages/redirect.php");
             }
             else
             {
-                $response = array('error' => true, 'message' => 'Falha ao tentar remover o usuário do sistema!');
+                $_SESSION['status'] = 'error';
+                $_SESSION['message'] = 'Erro ao remover usuário!';
+                header("Location: ../pages/redirect.php");
             }
 
             $stmt->close();
-            echo json_encode($response);
         }
         else
         {
-            $response = array('error' => true, 'message' => 'Usuário não encontrado.');
-            echo json_encode($response);
+            $_SESSION['status'] = 'error';
+            $_SESSION['message'] = 'Usuário não encontrado!';
+            header("Location: ../pages/redirect.php");
         }
     }
 }
