@@ -34,7 +34,8 @@
     </header>
     <main class="main">
         <div class="form_div">
-            <form action="../classes/user.php" method="POST" enctype="multipart/form-data">
+            <script src="../scripts/validate.js"></script>
+            <form action="../classes/user.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                 <label for="name">Nome:</label>
                 <input type="text" id="name" name="name" required><br>
 

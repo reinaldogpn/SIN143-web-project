@@ -2,10 +2,6 @@
 
 session_start();
 
-if (isset($_SESSION['user_id'])) {
-    header('Location: home.php');
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +23,7 @@ if (isset($_SESSION['user_id'])) {
     </header>
     <main class="main">
         <div class="form_div">
-            <form action="../classes/authentication.php" method="POST">
+            <form id="login-form" action="../classes/authentication.php" method="POST">
                 <label for="email">E-mail:</label>
                 <input type="email" id="email" name="email" required><br>
 
